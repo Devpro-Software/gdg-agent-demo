@@ -11,15 +11,7 @@ OPENROUTER_BASE = "https://openrouter.ai/api/v1"
 MODEL = "openai/gpt-4o-mini"
 TTS_ENABLED = True
 
-# Tool definition schema:
-# {
-#     "type": "function",
-#     "function": {
-#         "name": "name",
-#         "description": "description",
-#         "parameters": {"type": "object", "properties": {}},
-#     },
-# }
+
 TOOLS = [
     {
         "type": "function",
