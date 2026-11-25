@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vatel · GDSC McGill</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --orange: #c2440f;
+      --orange-hot: #e4571c;
+      --orange-soft: #ff8c42;
+      --orange-dim: #fff4ed;
+      --orange-border: #f0d2c4;
+      --dark: #111111;
+      --dark-soft: #46536a;
+      --muted: #6b645c;
+      --eyebrow: #7a4530;
+      --line: #d9d4cc;
+      --light: #f5f3f0;
+      --light-border: #e4e0db;
+      --white: #ffffff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #e7e2dc;
+      font-family: "Geist", system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+      color: var(--dark);
+    }
+
+    .presentation {
+      --sw: min(100vw, calc(100vh * 16 / 9));
+      --sh: calc(var(--sw) * 9 / 16);
+      width: var(--sw);
+      height: var(--sh);
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      container-type: size;
+      container-name: deck;
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.18);
+      background: var(--light);
+    }
+
+    .slide {
+      display: none;
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      flex-direction: column;
+      background: var(--light);
+    }
+
+    .slide.active { display: flex; }
+
+    .corner-logo {
+      position: absolute;
+      top: 4.6cqh;
+      right: 5.4cqw;
+      height: 3.8cqh;
+      width: auto;
+      z-index: 2;
+    }
+
+    .nav-bar {
+      position: fixed;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(24, 24, 27, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 8px 18px;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+    }
+
+    .nav-bar .slide-count {
+      font-size: 11px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.6);
+      letter-spacing: 0.5px;
+      min-width: 52px;
+      text-align: center;
+    }
+
+    .nav-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: rgba(255, 255, 255, 0.6);
+      padding: 4px 6px;
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-btn:hover { color: #fff; background: rgba(255, 255, 255, 0.12); }
+    .nav-btn svg { width: 16px; height: 16px; }
+
+    .pdf-btn {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      background: rgba(24, 24, 27, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: rgba(255, 255, 255, 0.6);
+      font-family: "Geist", sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      padding: 6px 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      backdrop-filter: blur(12px);
+      z-index: 100;
+    }
+
+    .pdf-btn:hover { color: #fff; border-color: rgba(255, 255, 255, 0.3); }
+    .pdf-btn svg { width: 13px; height: 13px; }
+
+    .slide-header {
+      display: flex;
+      align-items: center;
+      padding: 5.2cqh 6.6cqw 0;
+      flex-shrink: 0;
+    }
+
+    .section-tag {
+      font-size: 1.25cqw;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--eyebrow);
+    }
+
+    .slide-footer-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2cqh 6.6cqw 3.4cqh;
+      font-size: 1.15cqw;
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+
+    .footer-left { display: flex; align-items: center; gap: 1.1cqw; }
+    .footer-logo { height: 4.4cqh; width: auto; display: block; }
+
+    .slide-h2 {
+      font-size: 3.15cqw;
+      font-weight: 500;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+    }
+
+    .slide-subtitle {
+      font-size: 1.5cqw;
+      line-height: 1.4;
+      color: var(--dark-soft);
+      margin-top: 0.7cqh;
+      max-width: 70cqw;
+    }
+
+    .cover-slide {
+      background-image: radial-gradient(circle at 70% 16%, #ffb466 0%, #ff8c42 35%, #ff6a2a 65%, #f2551c 100%);
+      background-color: #ffb466;
+    }
+
+    .cover-inner {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      padding: 8cqh 7cqw 7cqh;
+      min-height: 0;
+    }
+
+    .cover-logo {
+      height: 4.2cqh;
+      width: auto;
+      max-width: 16cqw;
+      object-fit: contain;
+      object-position: left center;
+      margin-bottom: 4.5cqh;
+      display: block;
+    }
+
+    .cover-kicker {
+      font-size: 2.4cqw;
+      font-weight: 500;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      color: var(--white);
+      margin-bottom: 1.2cqh;
+    }
+
+    .slide-h1 {
+      font-size: 6.6cqw;
+      font-weight: 500;
+      line-height: 1.02;
+      letter-spacing: -0.04em;
+      color: var(--white);
+    }
+
+    .cover-foot {
+      margin-top: auto;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 3cqw;
+      padding-top: 4cqh;
+    }
+
+    .cover-people { display: flex; gap: 3.2cqw; }
+    .cover-people b { display: block; font-size: 1.7cqw; font-weight: 500; color: var(--white); }
+    .cover-people span { display: block; margin-top: 0.25cqh; font-size: 1.25cqw; color: rgba(255, 255, 255, 0.82); }
+    .cover-meta { text-align: right; }
+    .cover-meta-label { font-size: 1.45cqw; font-weight: 500; color: var(--white); }
+
+    .intro-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 0 6.6cqw;
+      max-width: 78cqw;
+    }
+
+    .big-text {
+      font-size: 2.7cqw;
+      font-weight: 500;
+      line-height: 1.32;
+      letter-spacing: -0.02em;
+    }
+
+    .big-text .hl { color: var(--orange); }
+
+    .sub-text {
+      font-size: 1.45cqw;
+      color: var(--dark-soft);
+      line-height: 1.55;
+      margin-top: 2.4cqh;
+      max-width: 64cqw;
+    }
+
+    .people {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2.4cqw;
+      padding: 3.2cqh 6.6cqw 0;
+      align-content: center;
+    }
+
+    .person {
+      border-top: 3px solid var(--orange);
+      background: var(--white);
+      padding: 3.2cqh 2.2cqw 3.4cqh;
+    }
+
+    .person h3 {
+      font-size: 2.5cqw;
+      font-weight: 500;
+      letter-spacing: -0.03em;
+    }
+
+    .person .role {
+      margin-top: 0.8cqh;
+      font-size: 1.15cqw;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--orange);
+    }
+
+    .person p {
+      margin-top: 2.2cqh;
+      font-size: 1.45cqw;
+      line-height: 1.45;
+      color: var(--dark-soft);
+      max-width: 32cqw;
+    }
+
+    .slide-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 1.4cqh 6.6cqw 0;
+      min-height: 0;
+    }
+
+    .moves {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.6cqw 3cqw;
+      align-content: center;
+    }
+
+    .move {
+      padding-top: 1.4cqh;
+      border-top: 1px solid var(--line);
+    }
+
+    .move .n {
+      font-size: 1.15cqw;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      color: var(--orange);
+    }
+
+    .move h3 {
+      margin-top: 0.8cqh;
+      font-size: 2.2cqw;
+      font-weight: 500;
+      letter-spacing: -0.03em;
+    }
+
+    .move p {
+      margin-top: 0.7cqh;
+      font-size: 1.35cqw;
+      line-height: 1.45;
+      color: var(--dark-soft);
+    }
+
+    .next-grid {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3cqw;
+      align-content: center;
+    }
+
+    .next-col h3 {
+      font-size: 2.3cqw;
+      font-weight: 500;
+      letter-spacing: -0.03em;
+      padding-bottom: 1cqh;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .bullet-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 1cqh;
+      margin-top: 1.6cqh;
+    }
+
+    .bullet-list li {
+      font-size: 1.4cqw;
+      color: var(--dark-soft);
+      line-height: 1.45;
+      padding-left: 1.5cqw;
+      position: relative;
+    }
+
+    .bullet-list li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.55em;
+      width: 0.45cqw;
+      height: 0.45cqw;
+      background: var(--orange);
+    }
+
+    .bullet-list strong { font-weight: 600; color: var(--dark); }
+
+    @page { size: 1920px 1080px; margin: 0; }
+
+    @media print {
+      html, body {
+        width: 1920px !important;
+        height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: visible !important;
+        background: #fff !important;
+      }
+      .nav-bar, .pdf-btn { display: none !important; }
+      .presentation {
+        position: static !important;
+        top: auto !important;
+        left: auto !important;
+        transform: none !important;
+        width: 1920px !important;
+        height: auto !important;
+        margin: 0 !important;
+        box-shadow: none !important;
+        container-type: normal;
+      }
+      .slide {
+        display: flex !important;
+        position: relative !important;
+        inset: auto !important;
+        width: 1920px !important;
+        height: 1080px !important;
+        max-width: 1920px !important;
+        max-height: 1080px !important;
+        margin: 0 !important;
+        overflow: hidden;
+        page-break-after: always;
+        break-after: page;
+        page-break-inside: avoid;
+        break-inside: avoid;
+        container-type: size;
+        container-name: deck;
+      }
+      .slide:last-child { page-break-after: auto; break-after: auto; }
+    }
+  </style>
+</head>
+<body>
+  <div class="presentation">
+    <section class="slide cover-slide active">
+      <img class="corner-logo" src="../devpro-process/sales/assets/logos/logo.png" alt="DevPro">
+      <div class="cover-inner">
+        <img class="cover-logo" src="../devpro-process/sales/assets/logos/vatel-logo-light.png" alt="Vatel">
+        <div class="cover-kicker">GDSC McGill</div>
+        <h1 class="slide-h1">Voice agents</h1>
+        <div class="cover-foot">
+          <div class="cover-people">
+            <div><b>Matthew Cabral</b><span>Cofounder and president</span></div>
+            <div><b>Gianluca Piccirillo</b><span>Cofounder and CTO</span></div>
+          </div>
+          <div class="cover-meta">
+            <div class="cover-meta-label">November 2026</div>
+            <div class="cover-meta-label">vatel.ai</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <img class="corner-logo" src="../devpro-process/sales/assets/logos/logo.png" alt="DevPro">
+      <div class="slide-header"><span class="section-tag">Who we are</span></div>
+      <div class="people">
+        <article class="person">
+          <h3>Matthew Cabral</h3>
+          <div class="role">Cofounder and president</div>
+        </article>
+        <article class="person">
+          <h3>Gianluca Piccirillo</h3>
+          <div class="role">Cofounder and CTO</div>
+        </article>
+      </div>
+      <div class="slide-footer-bar">
+        <span class="footer-left"><img class="footer-logo" src="../devpro-process/sales/assets/logos/vatel-logo-dark.png" alt="Vatel"></span>
+        <span>02</span>
+      </div>
+    </section>
+
+    <section class="slide">
+      <img class="corner-logo" src="../devpro-process/sales/assets/logos/logo.png" alt="DevPro">
+      <div class="slide-header"><span class="section-tag">Introduction</span></div>
+      <div class="intro-body">
+        <div class="big-text">Vatel is a <span class="hl">voice agent platform</span>.</div>
+        <div class="sub-text">An agent answers a call, uses tools, and speaks the result. Businesses use it for booking, questions, and after-hours calls.</div>
+      </div>
+      <div class="slide-footer-bar">
+        <span class="footer-left"><img class="footer-logo" src="../devpro-process/sales/assets/logos/vatel-logo-dark.png" alt="Vatel"></span>
+        <span>03</span>
+      </div>
+    </section>
+
+    <section class="slide">
+      <img class="corner-logo" src="../devpro-process/sales/assets/logos/logo.png" alt="DevPro">
+      <div class="slide-header"><span class="section-tag">Agent</span></div>
+      <div class="slide-body">
+        <div>
+          <div class="slide-h2">How it works</div>
+          <div class="slide-subtitle">Four steps. The demo builds them one at a time.</div>
+        </div>
+        <div class="moves">
+        <div class="move">
+          <div class="n">01</div>
+          <h3>Listen</h3>
+          <p>Someone speaks. In the demo, that is a line in the terminal. On a phone, it is the caller.</p>
+        </div>
+        <div class="move">
+          <div class="n">02</div>
+          <h3>Decide</h3>
+          <p>The model reads the conversation and chooses what to do next. Sometimes the answer is just words.</p>
+        </div>
+        <div class="move">
+          <div class="n">03</div>
+          <h3>Act</h3>
+          <p>When words are not enough, it calls a tool. The time. A calculation. A meeting on the books.</p>
+        </div>
+        <div class="move">
+          <div class="n">04</div>
+          <h3>Speak</h3>
+          <p>A voice reads the result back. The tool did the work. The voice only reports it.</p>
+        </div>
+      </div>
+      </div>
+      <div class="slide-footer-bar">
+        <span class="footer-left"><img class="footer-logo" src="../devpro-process/sales/assets/logos/vatel-logo-dark.png" alt="Vatel"></span>
+        <span>04</span>
+      </div>
+    </section>
+
+    <section class="slide">
+      <img class="corner-logo" src="../devpro-process/sales/assets/logos/logo.png" alt="DevPro">
+      <div class="slide-header"><span class="section-tag">Agenda</span></div>
+      <div class="slide-body">
+        <div>
+          <div class="slide-h2">Two parts</div>
+          <div class="slide-subtitle">Code first. Then the same agent in Vatel.</div>
+        </div>
+        <div class="next-grid">
+        <div class="next-col">
+          <h3>Code</h3>
+          <ul class="bullet-list">
+            <li>A chat with <strong>no tools</strong></li>
+            <li>Then <strong>one tool</strong>, so the model can do math</li>
+            <li>Then time, math, and <strong>booking a meeting</strong></li>
+            <li>Then the same agent, with a <strong>voice</strong></li>
+          </ul>
+        </div>
+        <div class="next-col">
+          <h3>Platform</h3>
+          <ul class="bullet-list">
+            <li>A <strong>voice</strong> instead of the laptop speaker</li>
+            <li>A <strong>phone number</strong> instead of a keyboard</li>
+            <li>A <strong>job</strong>: answer, check, book, say it back</li>
+            <li>We build that one <strong>live, on the platform</strong></li>
+          </ul>
+        </div>
+      </div>
+      </div>
+      <div class="slide-footer-bar">
+        <span class="footer-left"><img class="footer-logo" src="../devpro-process/sales/assets/logos/vatel-logo-dark.png" alt="Vatel"></span>
+        <span>05</span>
+      </div>
+    </section>
+
+    <section class="slide cover-slide">
+      <img class="corner-logo" src="../devpro-process/sales/assets/logos/logo.png" alt="DevPro">
+      <div class="cover-inner" style="justify-content:center;">
+        <img class="cover-logo" src="../devpro-process/sales/assets/logos/vatel-logo-light.png" alt="Vatel">
+        <div class="slide-h1" style="font-size:5.2cqw; max-width:14ch;">Demo</div>
+        <div class="sub-text" style="color:rgba(255,255,255,0.88); max-width:36cqw;">Code first. Then we build the agent in Vatel.</div>
+        <div style="margin-top:auto; font-size:1.45cqw; font-weight:500; color:var(--white);">vatel.ai</div>
+      </div>
+    </section>
+  </div>
+
+  <div class="nav-bar">
+    <button class="nav-btn" id="prevBtn" type="button" aria-label="Previous">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    </button>
+    <span class="slide-count" id="slideCount">1 / 6</span>
+    <button class="nav-btn" id="nextBtn" type="button" aria-label="Next">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+    </button>
+  </div>
+
+  <button class="pdf-btn" id="pdfBtn" type="button">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="6 9 6 2 18 2 18 9"></polyline>
+      <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+      <rect x="6" y="14" width="12" height="8"></rect>
+    </svg>
+    Export PDF
+  </button>
+
+  <script>
+    const slides = Array.from(document.querySelectorAll(".slide"));
+    const total = slides.length;
+    let current = 0;
+    const slideCount = document.getElementById("slideCount");
+    slideCount.textContent = "1 / " + total;
+
+    function goTo(index) {
+      if (index < 0 || index >= total) return;
+      slides[current].classList.remove("active");
+      current = index;
+      slides[current].classList.add("active");
+      slideCount.textContent = (current + 1) + " / " + total;
+    }
+
+    document.getElementById("pdfBtn").addEventListener("click", () => window.print());
+
+    document.getElementById("nextBtn").addEventListener("click", () => goTo(current + 1));
+    document.getElementById("prevBtn").addEventListener("click", () => goTo(current - 1));
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight" || e.key === "ArrowDown" || e.key === " ") {
+        e.preventDefault();
+        goTo(current + 1);
+      } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+        e.preventDefault();
+        goTo(current - 1);
+      } else if (e.key === "Home") {
+        e.preventDefault();
+        goTo(0);
+      } else if (e.key === "End") {
+        e.preventDefault();
+        goTo(total - 1);
+      }
+    });
+  </script>
+</body>
+</html>

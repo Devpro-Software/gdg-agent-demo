@@ -1,16 +1,15 @@
-"""Simple agent"""
+"""Chat loop with time, math, and book-meeting tools."""
 
 import json
-import subprocess
 import os
+import re
 from datetime import datetime
+from dotenv import load_dotenv
 from openai import OpenAI
 
+load_dotenv()
 
-OPENROUTER_BASE = "https://openrouter.ai/api/v1"
-MODEL = "openai/gpt-4o-mini"
-TTS_ENABLED = True
-
+MODEL = "gpt-4o-mini"
 
 TOOLS = [
     {
@@ -27,7 +26,7 @@ TOOLS = [
             "name": "book_meeting",
             "description": "Book a meeting with a given name and time",
             "parameters": {
-                "type": "object", 
+                "type": "object",
                 "properties": {
                     "name": {"type": "string", "description": "The name of the meeting"},
                     "time": {"type": "string", "description": "The current time. Use the get_current_time tool to get the current time."},
@@ -40,11 +39,11 @@ TOOLS = [
         "type": "function",
         "function": {
             "name": "eval_math",
-            "description": "Evaluate a simple math expression",
+            "description": "Evaluate a Python arithmetic expression. Use only digits and + - * / ** ( ). Use * for multiplication, never the letter x.",
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "expression": {"type": "string", "description": "e.g. 2 + 3 * 4"},
+                    "expression": {"type": "string", "description": "Python arithmetic, e.g. 2 + 3 * 4 or 10 * 10"},
                 },
                 "required": ["expression"],
             },
@@ -53,13 +52,29 @@ TOOLS = [
 ]
 
 
+def math_expression(expression: str) -> str:
+    """Turn a casual math string into a Python arithmetic expression."""
+    expression = expression.strip()
+    expression = expression.replace("×", "*").replace("÷", "/").replace("^", "**")
+    expression = re.sub(r"(?<=\d)\s*[xX]\s*(?=\d)", "*", expression)
+    expression = re.sub(r"\s+", "", expression)
+    if not expression or not re.fullmatch(r"[0-9+\-*/().]+", expression):
+        raise ValueError(expression)
+    return expression
+
+
 def run_tool(name: str, arguments: dict) -> str:
     """Run a tool and return the result"""
     if name == "get_current_time":
         d = datetime.now()
         return d.isoformat()
     if name == "eval_math":
-        return str(eval(arguments.get("expression", "0")))
+        raw = arguments.get("expression", "0")
+        try:
+            expression = math_expression(raw)
+            return str(eval(expression, {"__builtins__": {}}, {}))
+        except Exception:
+            return "Could not evaluate that expression. Use digits and + - * / ** ( )."
     if name == "book_meeting":
         return f"Meeting booked with {arguments.get('name', 'Unknown')} at {arguments.get('time', 'Unknown')}"
     return json.dumps({"error": f"Unknown tool: {name}"})
@@ -68,15 +83,12 @@ def run_tool(name: str, arguments: dict) -> str:
 def chat_loop():
     """Chat loop"""
     client = OpenAI(
-        base_url=OPENROUTER_BASE,
-        api_key=os.environ.get("OPENROUTER_API_KEY"),
+        api_key=os.environ.get("OPENAI_API_KEY"),
     )
-    messages = []
-
-    messages.append({
+    messages = [{
         "role": "system",
-        "content": "Your name is Jimmy. You are a helpful assistant that can use tools to get the current time and evaluate math expressions. Only output text, no special characters or parentheses.",
-    })
+        "content": "Your name is Jimmy. You are a helpful assistant that can use tools to get the current time, evaluate math expressions, and book meetings. Only output text, no special characters or parentheses.",
+    }]
 
     while True:
         try:
@@ -122,9 +134,6 @@ def chat_loop():
             if msg.content:
                 print("Bot:", msg.content)
             messages.append({"role": "assistant", "content": msg.content or ""})
-            if TTS_ENABLED:
-                with open(os.devnull, 'w', encoding='utf-8') as devnull:
-                    subprocess.call(['say', msg.content], stdout=devnull, stderr=devnull)
             break
 
 
