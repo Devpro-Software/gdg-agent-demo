@@ -111,28 +111,6 @@
     .nav-btn:hover { color: #fff; background: rgba(255, 255, 255, 0.12); }
     .nav-btn svg { width: 16px; height: 16px; }
 
-    .pdf-btn {
-      position: fixed;
-      top: 16px;
-      right: 16px;
-      background: rgba(24, 24, 27, 0.8);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      color: rgba(255, 255, 255, 0.6);
-      font-family: "Geist", sans-serif;
-      font-size: 11px;
-      font-weight: 500;
-      cursor: pointer;
-      padding: 6px 12px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      backdrop-filter: blur(12px);
-      z-index: 100;
-    }
-
-    .pdf-btn:hover { color: #fff; border-color: rgba(255, 255, 255, 0.3); }
-    .pdf-btn svg { width: 13px; height: 13px; }
-
     .slide-header {
       display: flex;
       align-items: center;
@@ -256,6 +234,24 @@
       line-height: 1.55;
       margin-top: 2.4cqh;
       max-width: 64cqw;
+    }
+
+    .company {
+      padding: 2.6cqh 6.6cqw 0;
+      max-width: 78cqw;
+      font-size: 1.45cqw;
+      line-height: 1.5;
+      color: var(--dark-soft);
+    }
+
+    .company a {
+      color: var(--orange);
+      text-decoration: none;
+    }
+
+    .sub-text a {
+      color: var(--orange);
+      text-decoration: none;
     }
 
     .people {
@@ -393,7 +389,7 @@
         overflow: visible !important;
         background: #fff !important;
       }
-      .nav-bar, .pdf-btn { display: none !important; }
+      .nav-bar { display: none !important; }
       .presentation {
         position: static !important;
         top: auto !important;
@@ -429,7 +425,7 @@
 <body>
   <div class="presentation">
     <section class="slide cover-slide active">
-      <img class="corner-logo" src="../devpro-process/sales/assets/logos/logo.png" alt="DevPro">
+      <img class="corner-logo" src="../devpro-process/sales/assets/logos/logo.png" alt="Devpro">
       <div class="cover-inner">
         <img class="cover-logo" src="../devpro-process/sales/assets/logos/vatel-logo-light.png" alt="Vatel">
         <div class="cover-kicker">GDSC McGill</div>
@@ -448,8 +444,9 @@
     </section>
 
     <section class="slide">
-      <img class="corner-logo" src="../devpro-process/sales/assets/logos/logo.png" alt="DevPro">
+      <img class="corner-logo" src="../devpro-process/sales/assets/logos/logo.png" alt="Devpro">
       <div class="slide-header"><span class="section-tag">Who we are</span></div>
+      <p class="company">Devpro is a software engineering and AI company in Montréal. We specialize in developing solutions for our customers, including custom software, integrations, and automation. Vatel AI is our voice agent platform. We work with customers in telecom, automotive, healthcare, insurance, retail, and energy. <a href="https://www.devprodigital.com/en">devprodigital.com</a></p>
       <div class="people">
         <article class="person">
           <h3>Matthew Cabral</h3>
@@ -467,11 +464,11 @@
     </section>
 
     <section class="slide">
-      <img class="corner-logo" src="../devpro-process/sales/assets/logos/logo.png" alt="DevPro">
+      <img class="corner-logo" src="../devpro-process/sales/assets/logos/logo.png" alt="Devpro">
       <div class="slide-header"><span class="section-tag">Introduction</span></div>
       <div class="intro-body">
-        <div class="big-text">Vatel is a <span class="hl">voice agent platform</span>.</div>
-        <div class="sub-text">An agent answers a call, uses tools, and speaks the result. Businesses use it for booking, questions, and after-hours calls.</div>
+        <div class="big-text">Vatel AI is a platform for building voice agents.</div>
+        <div class="sub-text">You set the prompt, the voice, and the model. You design the call as a flow, and you give the agent tools, including webhooks into your own code. You test it in the browser, publish a version, and put it on a phone number or a SIP trunk. <a href="https://www.vatel.ai/en">vatel.ai</a></div>
       </div>
       <div class="slide-footer-bar">
         <span class="footer-left"><img class="footer-logo" src="../devpro-process/sales/assets/logos/vatel-logo-dark.png" alt="Vatel"></span>
@@ -480,33 +477,33 @@
     </section>
 
     <section class="slide">
-      <img class="corner-logo" src="../devpro-process/sales/assets/logos/logo.png" alt="DevPro">
+      <img class="corner-logo" src="../devpro-process/sales/assets/logos/logo.png" alt="Devpro">
       <div class="slide-header"><span class="section-tag">Agent</span></div>
       <div class="slide-body">
         <div>
           <div class="slide-h2">How it works</div>
-          <div class="slide-subtitle">Four steps. The demo builds them one at a time.</div>
+          <div class="slide-subtitle">Speech in, a model, tools, speech out. The demo builds this one piece at a time.</div>
         </div>
         <div class="moves">
         <div class="move">
           <div class="n">01</div>
-          <h3>Listen</h3>
-          <p>Someone speaks. In the demo, that is a line in the terminal. On a phone, it is the caller.</p>
+          <h3>STT</h3>
+          <p>Speech-to-text. In the last code demo that is local Whisper on the mic. On a phone, it is the caller.</p>
         </div>
         <div class="move">
           <div class="n">02</div>
-          <h3>Decide</h3>
-          <p>The model reads the conversation and chooses what to do next. Sometimes the answer is just words.</p>
+          <h3>LLM</h3>
+          <p>The model reads the transcript, the prompt, and the tool list, then chooses the next step.</p>
         </div>
         <div class="move">
           <div class="n">03</div>
-          <h3>Act</h3>
-          <p>When words are not enough, it calls a tool. The time. A calculation. A meeting on the books.</p>
+          <h3>Tools</h3>
+          <p>A function call when words are not enough. In the demo: math, the current time, book a meeting.</p>
         </div>
         <div class="move">
           <div class="n">04</div>
-          <h3>Speak</h3>
-          <p>A voice reads the result back. The tool did the work. The voice only reports it.</p>
+          <h3>TTS</h3>
+          <p>Text-to-speech. The model's reply is turned back into audio for the caller.</p>
         </div>
       </div>
       </div>
@@ -517,30 +514,31 @@
     </section>
 
     <section class="slide">
-      <img class="corner-logo" src="../devpro-process/sales/assets/logos/logo.png" alt="DevPro">
+      <img class="corner-logo" src="../devpro-process/sales/assets/logos/logo.png" alt="Devpro">
       <div class="slide-header"><span class="section-tag">Agenda</span></div>
       <div class="slide-body">
         <div>
-          <div class="slide-h2">Two parts</div>
-          <div class="slide-subtitle">Code first. Then the same agent in Vatel.</div>
+          <div class="slide-h2">What we will cover</div>
+          <div class="slide-subtitle">The Python agent first, then the same agent in Vatel.</div>
         </div>
         <div class="next-grid">
         <div class="next-col">
           <h3>Code</h3>
           <ul class="bullet-list">
-            <li>A chat with <strong>no tools</strong></li>
-            <li>Then <strong>one tool</strong>, so the model can do math</li>
-            <li>Then time, math, and <strong>booking a meeting</strong></li>
-            <li>Then the same agent, with a <strong>voice</strong></li>
+            <li>A chat loop with no tools</li>
+            <li>One tool that evaluates a math expression</li>
+            <li>Tools for the current time, math, and booking a meeting</li>
+            <li>Text-to-speech for the model's reply</li>
+            <li>Local speech-to-text from the microphone</li>
           </ul>
         </div>
         <div class="next-col">
           <h3>Platform</h3>
           <ul class="bullet-list">
-            <li>A <strong>voice</strong> instead of the laptop speaker</li>
-            <li>A <strong>phone number</strong> instead of a keyboard</li>
-            <li>A <strong>job</strong>: answer, check, book, say it back</li>
-            <li>We build that one <strong>live, on the platform</strong></li>
+            <li>The same agent, configured in Vatel</li>
+            <li>Prompt, voice, and model</li>
+            <li>Tools, including a webhook</li>
+            <li>A test in the browser, then a phone number</li>
           </ul>
         </div>
       </div>
@@ -552,7 +550,7 @@
     </section>
 
     <section class="slide cover-slide">
-      <img class="corner-logo" src="../devpro-process/sales/assets/logos/logo.png" alt="DevPro">
+      <img class="corner-logo" src="../devpro-process/sales/assets/logos/logo.png" alt="Devpro">
       <div class="cover-inner" style="justify-content:center;">
         <img class="cover-logo" src="../devpro-process/sales/assets/logos/vatel-logo-light.png" alt="Vatel">
         <div class="slide-h1" style="font-size:5.2cqw; max-width:14ch;">Demo</div>
@@ -572,15 +570,6 @@
     </button>
   </div>
 
-  <button class="pdf-btn" id="pdfBtn" type="button">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <polyline points="6 9 6 2 18 2 18 9"></polyline>
-      <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
-      <rect x="6" y="14" width="12" height="8"></rect>
-    </svg>
-    Export PDF
-  </button>
-
   <script>
     const slides = Array.from(document.querySelectorAll(".slide"));
     const total = slides.length;
@@ -595,8 +584,6 @@
       slides[current].classList.add("active");
       slideCount.textContent = (current + 1) + " / " + total;
     }
-
-    document.getElementById("pdfBtn").addEventListener("click", () => window.print());
 
     document.getElementById("nextBtn").addEventListener("click", () => goTo(current + 1));
     document.getElementById("prevBtn").addEventListener("click", () => goTo(current - 1));

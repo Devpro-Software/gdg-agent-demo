@@ -138,7 +138,7 @@ def chat_loop():
             messages.append({"role": "assistant", "content": msg.content or ""})
             if TTS_ENABLED and msg.content:
                 with open(os.devnull, "w", encoding="utf-8") as devnull:
-                    subprocess.call(["say", "-v", "Ava (Premium)", msg.content], stdout=devnull, stderr=devnull)
+                    subprocess.call(["say", msg.content], stdout=devnull, stderr=devnull)
             break
 
 
