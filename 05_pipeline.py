@@ -1,4 +1,4 @@
-"""Chat loop with all tools, macOS TTS, and local push-to-talk STT (mlx-whisper)."""
+"""Full pipeline: push-to-talk STT, tools, and macOS TTS."""
 
 import json
 import os
