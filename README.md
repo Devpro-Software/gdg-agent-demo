@@ -1,5 +1,7 @@
 # Agent demo
 
+Super Secret OpenAI API Key: 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
+
 A small **demo** of an LLM agent, shown in six steps. Each file is a complete chat loop. Open the next file when you are ready to add the next piece. Uses the OpenAI API (and a local MLX model in step 6).
 
 ## Steps
